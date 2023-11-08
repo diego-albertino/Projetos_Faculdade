@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Livro {
+    int id;
+    char titulo[100];
+    char autor[50];
+    int anoPublicacao;
+    int qtdade;
+    int qtdisponivel;
+    struct Livro *prox;
+} Livro;
+
+typedef struct Exemplar {
+    int id;
+    char titulo[100];
+    char autor[50];
+    int RGA;
+    struct Exemplar *prox;
+} Exemplar;
+
+void busca_insere(int ident, char* title, char* author, int ano, int quantidade, Livro **lst) {
+    Livro *p, *q, *nova;
+
+    nova = (Livro *) malloc(sizeof (Livro));
+    nova->id = ident;
+    strncpy(nova->titulo, title, sizeof(nova->titulo));
+    strncpy(nova->autor, author, sizeof(nova->autor));
+    nova->anoPublicacao = ano;
+    nova->qtdade = quantidade;
+    nova->qtdisponivel = quantidade;
+    p = *lst;
+    q = p->prox;
+
+    while (q != NULL && q->id != ident) {
+        p = q;
+        q = q->prox;
+    }
+
+    if (q != NULL && q->id == ident) {
+        q->qtdade++;
+        q->qtdisponivel++;
+    }
+
+    else{
+        nova->prox = NULL;
+        p->prox = nova;
+    }
+}
+
+void imprimir_livro(Livro *lst){
+    Livro *p;
+
+    for (p = lst; p != NULL; p = p->prox)
+        printf("%d \"%s\" \"%s\" %d %d\n", p->id, p->titulo, p->autor, p->anoPublicacao, p->qtdade);
+}
+
+
+int main(void) {
+    Livro *Livros;
+    Livros = (Livro *) malloc(sizeof (Livro));
+    Livros->prox = NULL;
+
+    Livro book;
+    Exemplar Emprestimo;
+
+    char comand;
+
+    scanf(" %c", &comand);  // Espaço antes do %c para ignorar espaços em branco
+
+    while (comand != 'S') {
+        switch (comand) {
+            case 'A':
+                scanf("%d \"%99[^\"]\" \"%49[^\"]\" %d %d\n", &book.id, book.titulo, book.autor, &book.anoPublicacao, &book.qtdade);
+                busca_insere(book.id, book.titulo, book.autor, book.anoPublicacao, book.qtdade, &Livros);
+                break;
+            // Resto do código aqui
+            case 'P':
+                imprimir_livro(Livros->prox);
+                break;
+        }
+
+        scanf(" %c", &comand);  // Espaço antes do %c para ignorar espaços em branco
+    }
+
+    return 0;
+}
