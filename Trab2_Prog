@@ -49,11 +49,31 @@ void busca_insere(int ident, char* title, char* author, int ano, int quantidade,
     }
 }
 
+void busca_remove(int ident, Livro **lst){
+  Livro *p, *q;
+
+  p = *lst;
+  q = (*lst)->prox;
+
+  while(q != NULL && q->id != ident){
+    p = q;
+    q = q->prox;
+  }
+
+  if(q != NULL && q->qtdisponivel > 0){
+    p->prox = q->prox;
+    free(q);
+  }
+
+}
+
+
+
 void imprimir_livro(Livro *lst){
     Livro *p;
 
     for (p = lst; p != NULL; p = p->prox)
-        printf("%d \"%s\" \"%s\" %d %d\n", p->id, p->titulo, p->autor, p->anoPublicacao, p->qtdade);
+      printf("%d \"%s\" \"%s\" %d %d\n", p->id, p->titulo, p->autor, p->anoPublicacao, p->qtdade);
 }
 
 
@@ -75,10 +95,18 @@ int main(void) {
                 scanf("%d \"%99[^\"]\" \"%49[^\"]\" %d %d\n", &book.id, book.titulo, book.autor, &book.anoPublicacao, &book.qtdade);
                 busca_insere(book.id, book.titulo, book.autor, book.anoPublicacao, book.qtdade, &Livros);
                 break;
-            // Resto do código aqui
+
             case 'P':
                 imprimir_livro(Livros->prox);
                 break;
+
+            case 'R':
+            {
+              int x;
+              scanf("%d", &x);
+              busca_remove(x, &Livros);
+              break;
+            }
         }
 
         scanf(" %c", &comand);  // Espaço antes do %c para ignorar espaços em branco
