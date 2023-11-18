@@ -1,3 +1,4 @@
+// DIEGO ALBERTINO DA SILVA RODRIGUES E LUIZ GUILHERME ARAÚJO LEITE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -50,7 +51,7 @@ void busca_insere(int ident, char* title, char* author, int ano, int quantidade,
         if (q != NULL && q->id == ident) {
             q->qtdade++;
             q->qtdisponivel++;
-            free(nova);  // Já que é uma duplicata, liberamos o novo nó.
+            free(nova);
         } else {
             nova->prox = NULL;
             p->prox = nova;
@@ -64,15 +65,18 @@ void busca_remove(int ident, Livro **lst) {
     p = *lst;
     q = (*lst)->prox;
 
-
-
-    // Encontra o livro na lista
     while (q != NULL && q->id != ident) {
         p = q;
         q = q->prox;
     }
 
-    if (q != NULL && q->qtdade == q->qtdisponivel) {
+    if (q != NULL && q->qtdade > 0) {
+        q->qtdade --;
+        q->qtdisponivel --;
+        printf("Livro removido com sucesso.\n");
+    }
+
+    else if (q != NULL && q->qtdade == q->qtdisponivel) {
         p->prox = q->prox;
         free(q);
         printf("Livro removido com sucesso.\n");
@@ -80,7 +84,7 @@ void busca_remove(int ident, Livro **lst) {
 
     else{
 
-        if(q->qtdade != q->qtdisponivel)
+        if( q->qtdisponivel <= 0)
             printf("Livro está emprestado e não pode ser removido\n");
 
         else 
@@ -100,7 +104,7 @@ void emprestarLivros(Livro** livrosahemprestar, Exemplar** emprestar, int ID, in
         exit(EXIT_FAILURE);
     }
 
-    // Encontrar o livro correspondente
+   
     while (auxLivro && auxLivro->id != ID) {
         auxLivro = auxLivro->prox;
     }
@@ -108,7 +112,7 @@ void emprestarLivros(Livro** livrosahemprestar, Exemplar** emprestar, int ID, in
     if (auxLivro && auxLivro->qtdisponivel > 0) {
         auxLivro->qtdisponivel--;
 
-        // Procurar um exemplar disponível do livro
+      
         while (auxExemplar && (auxExemplar->id != ID || auxExemplar->RGA != 0)) {
             auxExemplar = auxExemplar->prox;
         }
@@ -116,7 +120,6 @@ void emprestarLivros(Livro** livrosahemprestar, Exemplar** emprestar, int ID, in
         if (auxExemplar) {
             auxExemplar->RGA = rga;
         } else {
-            // Adicionar um novo exemplar, pois nenhum exemplar disponível foi encontrado
             Exemplar* novoExemplar = (Exemplar*)malloc(sizeof(Exemplar));
             if (!novoExemplar) {
                 exit(EXIT_FAILURE);
@@ -191,7 +194,7 @@ int main(void) {
     int RGA, ID;
 
     while (1) {
-        scanf(" %c", &comand);  // Espaço antes do %c para ignorar espaços em branco
+        scanf(" %c", &comand);  
 
         switch (comand) {
             case 'A':
