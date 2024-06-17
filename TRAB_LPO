@@ -1,3 +1,4 @@
+// CLASSE MAIN
 public class Main {
     public static void main(String[] args) {
         // Criando autores
@@ -37,5 +38,194 @@ public class Main {
 
         // Listando pedidos de compra e mostrando total
         orcamento.listarPedidos();
+    }
+}
+
+//INTERFACE 
+interface Valida {
+	boolean validarEmail(String email);
+}
+
+//INTERFACE COMPRA
+interface Compra {
+	double calcularPreco();
+}
+
+//CLASSSE AUTOR
+class Autor implements Valida {
+	
+	private String nome;
+    private String email;
+    private String instituicao;
+	
+    public Autor(String nome, String email, String instituicao) {
+    	try {
+    		validarEmail(email);
+    		this.nome = nome;
+            this.email = email;
+            this.instituicao = instituicao;
+    	}catch(Exception e) {
+    		System.out.println("Favor informe um e-mail válido.");
+    	}
+    }
+	
+    @Override
+    public boolean validarEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
+    }
+    @Override
+    public String toString() {
+        return "Autor: " + nome + ", Email: " + email + ", Instituição: " + instituicao;
+    }
+
+}
+
+//CLASSE BIBLIOTECA
+import java.util.ArrayList;
+import java.util.Collections;
+
+class Biblioteca {
+    private ArrayList<LivroFisico> livros;
+    private ArrayList<Ebook> ebooks;
+    private ArrayList<LivroFisico> emprestados;
+    private ArrayList<Ebook> ebooksEmprestados;
+
+    public Biblioteca() {
+        this.livros = new ArrayList<>();
+        this.ebooks = new ArrayList<>();
+        this.emprestados = new ArrayList<>();
+    }
+
+    public void adicionarLivroFisico(LivroFisico livro) {
+        this.livros.add(livro);
+    }
+    public void adicionarLivroEbook(Ebook ebook) {
+        this.ebooks.add(ebook);
+    }
+
+    public void emprestarLivroFisico(LivroFisico livro) {
+        if (this.livros.contains(livro) && !this.emprestados.contains(livro)) {
+            this.emprestados.add(livro);
+        }
+    }
+    public void emprestarEbook(Ebook ebook) {
+        if (this.ebooks.contains(ebook) && !this.ebooksEmprestados.contains(ebook)) {
+            this.ebooksEmprestados.add(ebook);
+        }
+    }
+
+    public void devolverLivro(Livro livro) {
+        this.emprestados.remove(livro);
+    }
+
+    public void imprimirLivros() {
+        Collections.sort(this.livros, (l1, l2) -> l1.titulo.compareTo(l2.titulo));
+        for (Livro livro : this.livros) {
+            System.out.println(livro);
+        }
+    }	
+}
+// CLASSE EBOOK
+class Ebook extends Livro implements Comparable<Ebook> {
+    private double preco;
+
+    public Ebook(String titulo, String isbn, double preco) {
+        super(titulo, isbn);
+        this.preco = preco;
+    }
+
+    @Override
+    public double getPreco() {
+        return this.preco;
+    }
+
+    @Override
+    public int compareTo(Ebook outro) {
+        return this.titulo.compareTo(outro.titulo);
+    }
+
+    @Override
+    public String toString() {
+        return "Ebook: " + titulo + ", ISBN: " + isbn + ", Preço: " + preco;
+    }
+}
+
+// CLASSE LIVRO
+import java.util.ArrayList;
+
+abstract class Livro {
+	protected String titulo;
+    protected String isbn;
+    protected ArrayList<Autor> autores;
+    
+    public Livro(String titulo, String isbn) {
+    	this.titulo= titulo;
+    	this.isbn = isbn;
+    	this.autores = new ArrayList<>()  ;  
+    }
+    
+    public void adicionarAutor(Autor autor) {
+        this.autores.add(autor);
+    }
+    
+    public abstract double getPreco();
+    
+}
+// CLASSE LIVRO FISICO
+class LivroFisico extends Livro implements Comparable<LivroFisico> {
+    private double preco;
+
+    public LivroFisico(String titulo, String isbn, double preco) {
+        super(titulo, isbn);
+        this.preco = preco;
+    }
+
+    @Override
+    public double getPreco() {
+        return this.preco;
+    }
+
+    @Override
+    public int compareTo(LivroFisico outro) {
+        return this.titulo.compareTo(outro.titulo);
+    }
+
+    @Override
+    public String toString() {
+        return "Livro Físico: " + titulo + ", ISBN: " + isbn + ", Preço: " + preco;
+    }
+}
+// CLASSE ORÇAMENTO
+import java.util.LinkedList;
+
+class Orcamento implements Compra {
+    private LinkedList<Livro> pedido;
+
+    public Orcamento() {
+        this.pedido = new LinkedList<>();
+    }
+
+    public void adicionarLivroFisicoOrc(LivroFisico livro) {
+        this.pedido.add(livro);
+    }
+    public void adicionarLivroEbookOrc(Ebook ebook) {
+        this.pedido.add(ebook);
+    }
+
+    @Override
+    public double calcularPreco() {
+        double total = 0;
+        for (Livro livro : this.pedido) {
+            total += livro.getPreco();
+        }
+        return total;
+    }
+
+    public void listarPedidos() {
+        for (Livro livro : this.pedido) {
+            System.out.println(livro);
+        }
+        System.out.println("Total do pedido: " + calcularPreco());
     }
 }
