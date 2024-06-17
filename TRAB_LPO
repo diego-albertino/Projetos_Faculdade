@@ -1,0 +1,41 @@
+public class Main {
+    public static void main(String[] args) {
+        // Criando autores
+        Autor autor1 = new Autor("Autor1", "autor1@example.com", "Instituição1");
+        Autor autor2 = new Autor("Autor2", "autor2@example.com", "Instituição2");
+        // ... (criar mais autores)
+
+        // Criando livros físicos
+        LivroFisico livroFisico1 = new LivroFisico("Título1", "ISBN1", 29.99);
+        livroFisico1.adicionarAutor(autor1);
+        // ... (criar mais livros físicos)
+
+        // Criando ebooks
+        Ebook ebook1 = new Ebook("TítuloE1", "ISBNE1", 19.99);
+        
+        ebook1.adicionarAutor(autor2);
+        // ... (criar mais ebooks)
+
+        // Criando biblioteca e adicionando livros
+        Biblioteca biblioteca = new Biblioteca();
+        biblioteca.adicionarLivroFisico(livroFisico1);
+        biblioteca.adicionarLivroEbook(ebook1);
+        // ... (adicionar mais livros)
+
+        // Emprestando e devolvendo livros
+        biblioteca.emprestarLivroFisico(livroFisico1);
+        biblioteca.devolverLivro(livroFisico1);
+
+        // Imprimindo livros da biblioteca
+        biblioteca.imprimirLivros();
+
+        // Criando orçamentos e adicionando pedidos
+        Orcamento orcamento = new Orcamento();
+        orcamento.adicionarLivroFisicoOrc(livroFisico1);
+        orcamento.adicionarLivroEbookOrc(ebook1);
+        // ... (adicionar mais livros)
+
+        // Listando pedidos de compra e mostrando total
+        orcamento.listarPedidos();
+    }
+}
