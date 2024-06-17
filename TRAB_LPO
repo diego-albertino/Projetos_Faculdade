@@ -38,6 +38,10 @@ public class Main {
 
         // Listando pedidos de compra e mostrando total
         orcamento.listarPedidos();
+
+	//Imprimindo livros empretados
+        System.out.println("Livros Empretados:");
+        biblioteca.imprimirLivrosEmprestados();
     }
 }
 
@@ -124,7 +128,12 @@ class Biblioteca {
         for (Livro livro : this.livros) {
             System.out.println(livro);
         }
-    }	
+    }
+    public void imprimirLivrosEmprestados() {
+    	for(Livro emprestado: this.emprestados) {
+    		System.out.println(emprestado);
+    	}
+    }
 }
 // CLASSE EBOOK
 class Ebook extends Livro implements Comparable<Ebook> {
